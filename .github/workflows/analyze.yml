@@ -20,7 +20,7 @@ permissions:
 
 # Repository variables can be set at: https://github.com/OWNER/REPO/settings/variables/actions
 # Set USERHANDLE to your GitHub username to enable the "My items only" filter
-# Set REPOS_TO_SCAN to a space-separated list of repos (e.g., "github/app rajbos/ai-engineering-fluency")
+# Set REPOS_TO_SCAN to a comma-separated list of repos (e.g., "github/app,rajbos/ai-engineering-fluency")
 
 jobs:
   analyze:
@@ -59,7 +59,9 @@ jobs:
           REPOS: ${{ vars.REPOS_TO_SCAN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python analyze_discussions.py $REPOS --refresh --fetch-profiles
+          # Convert comma-separated repos to space-separated for the script
+          REPOS_SPACE=$(echo "$REPOS" | tr ',' ' ')
+          python analyze_discussions.py $REPOS_SPACE --refresh --fetch-profiles
       
       - name: Setup Pages
         if: vars.REPOS_TO_SCAN != ''

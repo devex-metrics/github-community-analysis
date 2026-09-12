@@ -40,7 +40,7 @@ Automation:
 - To enable: Go to Settings > Pages and set the source to "GitHub Actions"
 - Repository variables to set at Settings > Secrets and variables > Actions > Variables:
   - `USERHANDLE`: Your GitHub username (enables the "My items only" filter)
-  - `REPOS_TO_SCAN`: Space-separated list of repos to analyze (e.g., `github/app rajbos/ai-engineering-fluency`)
+  - `REPOS_TO_SCAN`: Comma-separated list of repos to analyze (e.g., `github/app,rajbos/ai-engineering-fluency`)
 
 Configuration:
 - Copy `.env.example` to `.env` and set your GitHub username to enable the "My items only" filter in the Updates tab:
