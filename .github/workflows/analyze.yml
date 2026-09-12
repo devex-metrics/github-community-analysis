@@ -55,7 +55,7 @@ jobs:
           python-version: '3.11'
       
       - name: Cache data and profiles
-        uses: actions/cache@0c4577352c7a564b61c43a3b8c06453b634be0f5 # v4.0.1
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.0.1
         with:
           path: |
             data/
