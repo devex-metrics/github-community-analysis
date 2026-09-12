@@ -57,6 +57,7 @@ jobs:
       - name: Run analyzer
         env:
           REPOS: ${{ vars.REPOS_TO_SCAN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python analyze_discussions.py $REPOS --refresh --fetch-profiles
       
