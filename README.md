@@ -32,6 +32,13 @@ Example:
 python analyze_discussions.py github/app rajbos/ai-engineering-fluency --refresh --fetch-profiles
 ```
 
+Automation:
+- This repository includes a GitHub Actions workflow (`.github/workflows/analyze.yml`) that:
+  - Runs daily at 8:00 UTC
+  - Analyzes all repos listed under "Often used repos:"
+  - Publishes reports to GitHub Pages
+- To enable: Go to Settings > Pages and set the source to "GitHub Actions"
+
 Configuration:
 - Copy `.env.example` to `.env` and set your GitHub username to enable the "My items only" filter in the Updates tab:
   ```

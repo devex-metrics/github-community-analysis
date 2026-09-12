@@ -1,0 +1,67 @@
+name: Analyze GitHub Discussions
+
+on:
+  # Run on push to main (to update when repos list changes)
+  push:
+    paths:
+      - '.github/workflows/analyze.yml'
+      - 'analyze_discussions.py'
+  
+  # Run daily at 8:00 UTC
+  schedule:
+    - cron: '0 6 * * *'
+  
+  # Allow manual triggering from GitHub UI
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+      
+      - name: Extract repos from README
+        id: repos
+        run: |
+          # Extract repos from README (lines starting with - under "Often used repos:")
+          REPOS=$(grep -A 100 "Often used repos:" README.md | grep "^\- " | sed 's/^\- //' | head -20 | tr '\n' ' ' | sed 's/ $//')
+          echo "Repos to analyze: $REPOS"
+          echo "repos=$REPOS" >> $GITHUB_OUTPUT
+      
+      - name: Run analyzer
+        if: steps.repos.outputs.repos != ''
+        run: |
+          python analyze_discussions.py ${{ steps.repos.outputs.repos }} --refresh --fetch-profiles
+      
+      - name: Setup Pages
+        if: steps.repos.outputs.repos != ''
+        uses: actions/configure-pages@v4
+      
+      - name: Upload reports to Pages
+        if: steps.repos.outputs.repos != ''
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: reports/
+      
+      - name: Deploy to GitHub Pages
+        if: steps.repos.outputs.repos != ''
+        uses: actions/deploy-pages@v4
