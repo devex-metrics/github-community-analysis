@@ -38,6 +38,7 @@ Automation:
   - Analyzes all repos listed under "Often used repos:"
   - Publishes reports to GitHub Pages
 - To enable: Go to Settings > Pages and set the source to "GitHub Actions"
+- To enable the "My items only" filter in the workflow: Set a repository variable `USERHANDLE` to your GitHub username at Settings > Secrets and variables > Actions > Variables
 
 Configuration:
 - Copy `.env.example` to `.env` and set your GitHub username to enable the "My items only" filter in the Updates tab:
