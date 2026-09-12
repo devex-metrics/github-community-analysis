@@ -1,3 +1,18 @@
+# GitHub Discussions & Issues Analyzer
+
+Analyze activity across GitHub repositories with interactive HTML reports. This tool fetches discussions, issues, and releases from one or more repositories and generates a self-contained HTML report with charts and tables showing:
+
+- **Activity over time**: Discussions and issues opened/closed
+- **Top contributors**: Most active users across discussions and issues
+- **Contributor growth**: New contributors over time
+- **Backlog trends**: Net change and cumulative open items
+- **Company insights**: Contributor affiliation (when using `--fetch-profiles`)
+- **Recent activity**: Full list of discussions, issues, and releases
+
+Reports are saved to the `reports/` folder and include interactive charts powered by Chart.js.
+
+---
+
 Usage: python analyze_discussions.py owner/repo
 
 Often used repos:
