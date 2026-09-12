@@ -62,6 +62,12 @@ jobs:
           # Convert comma-separated repos to space-separated for the script
           REPOS_SPACE=$(echo "$REPOS" | tr ',' ' ')
           python analyze_discussions.py $REPOS_SPACE --refresh --fetch-profiles
+          # Rename the report to index.html for GitHub Pages
+          REPORT_FILE=$(ls reports/report_*.html | head -1)
+          if [ -n "$REPORT_FILE" ]; then
+            cp "$REPORT_FILE" reports/index.html
+            echo "Renamed $REPORT_FILE to reports/index.html"
+          fi
       
       - name: Setup Pages
         if: vars.REPOS_TO_SCAN != ''
