@@ -20,6 +20,7 @@ permissions:
 
 # Repository variables can be set at: https://github.com/OWNER/REPO/settings/variables/actions
 # Set USERHANDLE to your GitHub username to enable the "My items only" filter
+# Set REPOS_TO_SCAN to a space-separated list of repos (e.g., "github/app rajbos/ai-engineering-fluency")
 
 jobs:
   analyze:
@@ -53,29 +54,22 @@ jobs:
         with:
           python-version: '3.11'
       
-      - name: Extract repos from README
-        id: repos
-        run: |
-          # Extract repos from README (lines starting with - under "Often used repos:")
-          REPOS=$(grep -A 100 "Often used repos:" README.md | grep "^\- " | sed 's/^\- //' | head -20 | tr '\n' ' ' | sed 's/ $//')
-          echo "Repos to analyze: $REPOS"
-          echo "repos=$REPOS" >> $GITHUB_OUTPUT
-      
       - name: Run analyzer
-        if: steps.repos.outputs.repos != ''
+        env:
+          REPOS: ${{ vars.REPOS_TO_SCAN }}
         run: |
-          python analyze_discussions.py ${{ steps.repos.outputs.repos }} --refresh --fetch-profiles
+          python analyze_discussions.py $REPOS --refresh --fetch-profiles
       
       - name: Setup Pages
-        if: steps.repos.outputs.repos != ''
+        if: vars.REPOS_TO_SCAN != ''
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       
       - name: Upload reports to Pages
-        if: steps.repos.outputs.repos != ''
+        if: vars.REPOS_TO_SCAN != ''
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: reports/
       
       - name: Deploy to GitHub Pages
-        if: steps.repos.outputs.repos != ''
+        if: vars.REPOS_TO_SCAN != ''
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

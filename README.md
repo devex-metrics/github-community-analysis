@@ -35,10 +35,12 @@ python analyze_discussions.py github/app rajbos/ai-engineering-fluency --refresh
 Automation:
 - This repository includes a GitHub Actions workflow (`.github/workflows/analyze.yml`) that:
   - Runs daily at 8:00 UTC
-  - Analyzes all repos listed under "Often used repos:"
+  - Analyzes repos specified in the `REPOS_TO_SCAN` repository variable
   - Publishes reports to GitHub Pages
 - To enable: Go to Settings > Pages and set the source to "GitHub Actions"
-- To enable the "My items only" filter in the workflow: Set a repository variable `USERHANDLE` to your GitHub username at Settings > Secrets and variables > Actions > Variables
+- Repository variables to set at Settings > Secrets and variables > Actions > Variables:
+  - `USERHANDLE`: Your GitHub username (enables the "My items only" filter)
+  - `REPOS_TO_SCAN`: Space-separated list of repos to analyze (e.g., `github/app rajbos/ai-engineering-fluency`)
 
 Configuration:
 - Copy `.env.example` to `.env` and set your GitHub username to enable the "My items only" filter in the Updates tab:
