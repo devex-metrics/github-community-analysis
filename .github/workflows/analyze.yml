@@ -54,6 +54,15 @@ jobs:
         with:
           python-version: '3.11'
       
+      - name: Cache data and profiles
+        uses: actions/cache@0c4577352c7a564b61c43a3b8c06453b634be0f5 # v4.0.1
+        with:
+          path: |
+            data/
+          key: cache-data-profiles-${{ hashFiles('.github/workflows/analyze.yml', 'analyze_discussions.py') }}
+          restore-keys: |
+            cache-data-profiles-
+      
       - name: Run analyzer
         env:
           REPOS: ${{ vars.REPOS_TO_SCAN }}
@@ -61,7 +70,9 @@ jobs:
         run: |
           # Convert comma-separated repos to space-separated for the script
           REPOS_SPACE=$(echo "$REPOS" | tr ',' ' ')
-          python analyze_discussions.py $REPOS_SPACE --refresh --fetch-profiles
+          # Use cached data when available, fetch fresh if cache is empty
+          # --fetch-profiles ensures we get the latest profile data for new users
+          python analyze_discussions.py $REPOS_SPACE --fetch-profiles
           # Rename the report to index.html for GitHub Pages
           REPORT_FILE=$(ls reports/report_*.html | head -1)
           if [ -n "$REPORT_FILE" ]; then
