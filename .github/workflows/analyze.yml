@@ -31,7 +31,7 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       
@@ -42,7 +42,7 @@ jobs:
           echo "Created .env with GITHUB_USER=${{ vars.USERHANDLE }}"
       
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       
@@ -67,14 +67,14 @@ jobs:
       
       - name: Setup Pages
         if: steps.repos.outputs.repos != ''
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v6
       
       - name: Upload reports to Pages
         if: steps.repos.outputs.repos != ''
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: reports/
       
       - name: Deploy to GitHub Pages
         if: steps.repos.outputs.repos != ''
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
