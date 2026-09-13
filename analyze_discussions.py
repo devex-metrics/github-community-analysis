@@ -663,6 +663,28 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       --bg: #f6f8fa; --card: #fff; --border: #d1d9e0;
       --text: #1f2328; --muted: #656d76;
       --accent: #0969da; --green: #1a7f37; --red: #cf222e;
+      --hover: #e6edf3; --hover-soft: #f0f3f6; --row-hover: #f6f8fa;
+      --badge-open-bg: #dafbe1; --badge-closed-bg: #ffebe9;
+      --chart-grid: #e1e4e8; --chart-tick: #656d76; --chart-legend: #1f2328;
+    }
+    [data-theme="dark"] {
+      --bg: #0d1117; --card: #161b22; --border: #30363d;
+      --text: #e6edf3; --muted: #8b949e;
+      --accent: #2f81f7; --green: #3fb950; --red: #f85149;
+      --hover: #21262d; --hover-soft: #1c2128; --row-hover: #161b22;
+      --badge-open-bg: rgba(63,185,80,.15); --badge-closed-bg: rgba(248,81,73,.15);
+      --chart-grid: #30363d; --chart-tick: #8b949e; --chart-legend: #e6edf3;
+    }
+    /* Respect system preference until the user picks a theme explicitly */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0d1117; --card: #161b22; --border: #30363d;
+        --text: #e6edf3; --muted: #8b949e;
+        --accent: #2f81f7; --green: #3fb950; --red: #f85149;
+        --hover: #21262d; --hover-soft: #1c2128; --row-hover: #161b22;
+        --badge-open-bg: rgba(63,185,80,.15); --badge-closed-bg: rgba(248,81,73,.15);
+        --chart-grid: #30363d; --chart-tick: #8b949e; --chart-legend: #e6edf3;
+      }
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -671,6 +693,16 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
              padding: 1rem 1.5rem; display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
     header h1 { font-size: 1.1rem; font-weight: 600; }
     header .meta { color: var(--muted); font-size: .8rem; margin-left: auto; white-space: nowrap; }
+    .theme-toggle { background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+                    width: 34px; height: 34px; display: inline-flex; align-items: center;
+                    justify-content: center; cursor: pointer; color: var(--text);
+                    flex-shrink: 0; transition: background .15s, border-color .15s; }
+    .theme-toggle:hover { background: var(--hover-soft); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+    [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+    [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
     /* Repo switcher toolbar */
     .repo-toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: .6rem 1.5rem; }
     .repo-toolbar .inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
@@ -706,7 +738,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     .toggle-btn { padding: .3rem .7rem; border: 1px solid var(--border); background: var(--bg);
                   border-radius: 6px; cursor: pointer; font-size: .8rem; color: var(--text); }
     .toggle-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .toggle-btn:hover:not(.active) { background: #e6edf3; }
+    .toggle-btn:hover:not(.active) { background: var(--hover); }
     /* Hero card (Updates tab) */
     .hero-card { background: linear-gradient(135deg, var(--accent), #1a56c4); color: #fff; border: none; }
     .hero-card .hero-stat { font-size: 2.5rem; font-weight: 700; line-height: 1; }
@@ -729,18 +761,18 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     th { text-align: left; padding: .5rem .75rem; border-bottom: 2px solid var(--border);
          color: var(--muted); font-weight: 600; white-space: nowrap; }
     th.sortable { cursor: pointer; user-select: none; }
-    th.sortable:hover { color: var(--text); background: #f0f3f6; }
+    th.sortable:hover { color: var(--text); background: var(--hover-soft); }
     th.sort-active { color: var(--accent); }
     td { padding: .5rem .75rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #f6f8fa; }
+    tr:hover td { background: var(--row-hover); }
     .td-title  { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .td-labels { max-width: 200px; }
     .td-repo   { font-size: .8rem; white-space: nowrap; }
     .badge { display: inline-block; padding: .15em .55em; border-radius: 20px;
              font-size: .72rem; font-weight: 600; white-space: nowrap; }
-    .badge.open   { background: #dafbe1; color: var(--green); }
-    .badge.closed { background: #ffebe9; color: var(--red); }
+    .badge.open   { background: var(--badge-open-bg); color: var(--green); }
+    .badge.closed { background: var(--badge-closed-bg); color: var(--red); }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
     /* Filter & pagination */
@@ -754,8 +786,19 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     .pager-btn { padding: .3rem .65rem; border: 1px solid var(--border); background: var(--bg);
                  border-radius: 6px; cursor: pointer; font-size: .8rem; color: var(--text); }
     .pager-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .pager-btn:hover:not(.active) { background: #e6edf3; }
+    .pager-btn:hover:not(.active) { background: var(--hover); }
   </style>
+  <script>
+    // Apply saved theme before first paint to avoid a flash of the wrong theme.
+    (function () {
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "dark" || t === "light") {
+          document.documentElement.setAttribute("data-theme", t);
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -765,6 +808,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   </svg>
   <h1>TMPL_REPO_TITLE &mdash; Analytics</h1>
   <span class="meta">Data fetched: TMPL_FETCHED_AT</span>
+  <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  </button>
 </header>
 
 <!-- Repo switcher toolbar (hidden for single repo) -->
@@ -1079,6 +1126,47 @@ function renderLabelBadges(labels) {
   }).join(" ");
 }
 const showRepoCol = () => multiRepo && activeRepo === "all";
+
+/* ── Theme (dark mode) ── */
+function currentThemeIsDark() {
+  const t = document.documentElement.getAttribute("data-theme");
+  if (t === "dark") return true;
+  if (t === "light") return false;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+function applyChartTheme() {
+  const cs = getComputedStyle(document.documentElement);
+  const grid = cs.getPropertyValue("--chart-grid").trim();
+  const tick = cs.getPropertyValue("--chart-tick").trim();
+  const legend = cs.getPropertyValue("--chart-legend").trim();
+  Object.values(charts).forEach(c => {
+    if (!c || !c.options) return;
+    if (c.options.scales) {
+      Object.values(c.options.scales).forEach(s => {
+        if (!s) return;
+        s.ticks = Object.assign({}, s.ticks, { color: tick });
+        s.grid = Object.assign({}, s.grid, (s.grid && s.grid.drawOnChartArea === false) ? {} : { color: grid });
+      });
+    }
+    if (c.options.plugins && c.options.plugins.legend) {
+      c.options.plugins.legend.labels = Object.assign({}, c.options.plugins.legend.labels, { color: legend });
+    }
+    c.update("none");
+  });
+}
+function setTheme(theme) {
+  if (theme === "dark" || theme === "light") {
+    document.documentElement.setAttribute("data-theme", theme);
+    try { localStorage.setItem("theme", theme); } catch (e) {}
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+    try { localStorage.removeItem("theme"); } catch (e) {}
+  }
+  applyChartTheme();
+}
+function toggleTheme() {
+  setTheme(currentThemeIsDark() ? "light" : "dark");
+}
 
 /* ── Tab switching ── */
 const VALID_TABS = [...document.querySelectorAll(".tab-btn")].map(b => b.dataset.tab);
@@ -1993,6 +2081,7 @@ function renderPager(id, total, current, fnName) {
 /* ── Bootstrap ── */
 (function init() {
   initRepoSwitcher();
+  document.getElementById("themeToggle").addEventListener("click", toggleTheme);
   const v = getView();
 
   charts.activityOverTime = makeActivityChart("activityOverTimeChart", v, activeFreq.contrib);
@@ -2050,6 +2139,8 @@ function renderPager(id, total, current, fnName) {
 
   const initialTab = location.hash.slice(1);
   if (initialTab && VALID_TABS.includes(initialTab)) switchTab(initialTab, false);
+
+  applyChartTheme();
 })();
 </script>
 </body>
